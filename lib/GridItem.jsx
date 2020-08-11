@@ -62,6 +62,7 @@ type Props = {
   // Draggability
   cancel: string,
   handle: string,
+  enableUserSelectHack: boolean,
 
   x: number,
   y: number,
@@ -160,6 +161,7 @@ export default class GridItem extends React.Component<Props, State> {
     handle: PropTypes.string,
     // Selector for draggable cancel (see react-draggable)
     cancel: PropTypes.string,
+    enableUserSelectHack: PropTypes.bool,
     // Current position of a dropping element
     droppingPosition: PropTypes.shape({
       e: PropTypes.object.isRequired,
@@ -176,7 +178,8 @@ export default class GridItem extends React.Component<Props, State> {
     minW: 1,
     maxH: Infinity,
     maxW: Infinity,
-    transformScale: 1
+    transformScale: 1,
+    enableUserSelectHack: true
   };
 
   state: State = {
@@ -325,6 +328,7 @@ export default class GridItem extends React.Component<Props, State> {
           (this.props.cancel ? "," + this.props.cancel : "")
         }
         scale={this.props.transformScale}
+        enableUserSelectHack={this.props.enableUserSelectHack}
       >
         {child}
       </DraggableCore>
@@ -342,7 +346,7 @@ export default class GridItem extends React.Component<Props, State> {
     position: Position,
     isResizable: boolean
   ): ReactElement<any> {
-    const { cols, x, minW, minH, maxW, maxH, transformScale } = this.props;
+    const { cols, x, minW, minH, maxW, maxH, transformScale, enableUserSelectHack } = this.props;
     const positionParams = this.getPositionParams();
 
     // This is the max possible width - doesn't go to infinity because of the width of the window
@@ -360,7 +364,8 @@ export default class GridItem extends React.Component<Props, State> {
     return (
       <Resizable
         draggableOpts={{
-          disabled: !isResizable
+          disabled: !isResizable,
+          enableUserSelectHack
         }}
         className={isResizable ? undefined : "react-resizable-hide"}
         width={position.width}
